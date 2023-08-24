@@ -1,84 +1,117 @@
-let choiceArray = [
+const rockBtn = document.querySelector('#rockBtn');
+const paperBtn = document.querySelector('#paperBtn');
+const scissorsBtn = document.querySelector('#scissorsBtn');
+const scoreBoard = document.querySelector('#scoreBoard');
+const playerScore = document.createElement('p');
+const computerScore = document.createElement('p');
+const drawScore = document.createElement('p');
+const playerMove = document.createElement('p');
+const computerMove = document.createElement('p');
+const winner = document.createElement('p');
+const choiceArray = [
     'Rock',
     'Paper',
-    'Scissors',
-    'rock',
-    'paper',
-    'scissors'
+    'Scissors'
 ];
-let winnerArray = [
-    'Player wins',
-    'Computer wins',
-    'No winner'
-]
-let winner;
 
+let playerCount = 0;
+let computerCount = 0;
+let drawCount = 0;
+let playerMoveTracker;
+let computerMoveTracker;
+
+
+
+scoreBoard.style.border = 'solid';
+scoreBoard.style.backgroundColor = 'lightpink';
+
+playerScore.classList.add('playerScore');
+playerScore.textContent = 'Player score is: ' + playerCount;
+
+
+scoreBoard.appendChild(playerScore);
+
+computerScore.classList.add('computerScore');
+computerScore.textContent = 'Computer score is: ' + computerCount;
+
+
+scoreBoard.appendChild(computerScore);
+
+
+drawScore.classList.add('drawScore');
+drawScore.textContent = 'Number of draws: ' + drawCount;
+
+
+scoreBoard.appendChild(drawScore);
+scoreBoard.appendChild(computerMove);
+scoreBoard.appendChild(playerMove);
+scoreBoard.appendChild(winner);
+
+
+// randomize computer choice for a more fair game
 function getComputerChoice () {
     let randomIndex = Math.floor(Math.random() * choiceArray.length);
     let randomElement = choiceArray[randomIndex];
     return randomElement
 }
 
-function getPlayerChoice () {
-    let playerChoice = prompt("Pick Rock, Paper or Scissors")
-    return playerChoice
-}
+// buttons to make player choice interactive
+
+    rockBtn.addEventListener('click', function(e){
+        playRound('Rock', getComputerChoice());
+    });
+    paperBtn.addEventListener('click', function(e){
+        playRound('Paper', getComputerChoice());
+    });
+    scissorsBtn.addEventListener('click', function(e){
+        playRound('Scissors', getComputerChoice());
+    });
+
 
 function playRound (playerSelection, computerSelection) {
-    console.log("You selected " + playerSelection);
-    console.log("Computer selected " + computerSelection)
-    
-
-    if((playerSelection == choiceArray[1] || playerSelection == choiceArray[4]) && (computerSelection == choiceArray[1] || computerSelection == choiceArray[4])){
-        winner = winnerArray[2];
-    } else if((playerSelection == choiceArray[2] || playerSelection == choiceArray[5]) && (computerSelection == choiceArray[1] || computerSelection == choiceArray[4])){
-        winner = winnerArray[0];
-    } else if((playerSelection == choiceArray[0] || playerSelection == choiceArray[3]) && (computerSelection == choiceArray[2] || computerSelection == choiceArray[5])){
-        winner = winnerArray[0];
-    } else if((playerSelection == choiceArray[1] || playerSelection == choiceArray[4]) && (computerSelection == choiceArray[0] || computerSelection == choiceArray[3])){
-        winner = winnerArray[0];
-    } else if((playerSelection == choiceArray[2] || playerSelection == choiceArray[5]) && (computerSelection == choiceArray[0] || computerSelection == choiceArray[3])){
-        winner = winnerArray[1];
-    } else if((playerSelection == choiceArray[0] || playerSelection == choiceArray[3]) && (computerSelection == choiceArray[1] || computerSelection == choiceArray[4])){
-        winner = winnerArray[1];
-    } else if((playerSelection == choiceArray[1] || playerSelection == choiceArray[4]) && (computerSelection == choiceArray[2] || computerSelection == choiceArray[5])){
-        winner = winnerArray[1];
-    } else if((playerSelection == choiceArray[2] || playerSelection == choiceArray[5]) && (computerSelection == choiceArray[2] || computerSelection == choiceArray[5])){
-        winner = winnerArray[2];
-    } else if((playerSelection == choiceArray[0] || playerSelection == choiceArray[3]) && (computerSelection == choiceArray[0] || computerSelection == choiceArray[3])){
-        winner = winnerArray[2];
-    }
-    console.log(winner)
-    return winner
-}
-
-
-function game(numRounds) {
-    let playerCount = 0;
-    let computerCount = 0;
-    let drawCount = 0;
-    
-
-    for ( let i = 1; i <= numRounds; i++){
-        playRound(getPlayerChoice(), getComputerChoice())
-        if( winner == winnerArray[0]) {
+  
+    if ((playerCount + computerCount) !== 5 ) {
+        playerMove.textContent = 'You selected ' + playerSelection;
+        computerMove.textContent = 'Computer selected ' + computerSelection;
+        if((playerSelection == choiceArray[1]) && (computerSelection == choiceArray[1])){
+            drawCount++;
+        } else if((playerSelection == choiceArray[2]) && (computerSelection == choiceArray[1])){
             playerCount++;
-        } else if (winner == winnerArray[1]){
+        } else if((playerSelection == choiceArray[0]) && (computerSelection == choiceArray[2])){
+            playerCount++;
+        } else if((playerSelection == choiceArray[1]) && (computerSelection == choiceArray[0])){
+            playerCount++;
+        } else if((playerSelection == choiceArray[2]) && (computerSelection == choiceArray[0])){
             computerCount++;
-        } else {
+        } else if((playerSelection == choiceArray[0]) && (computerSelection == choiceArray[1])){
+            computerCount++;
+        } else if((playerSelection == choiceArray[1]) && (computerSelection == choiceArray[2])){
+            computerCount++;
+        } else if((playerSelection == choiceArray[2]) && (computerSelection == choiceArray[2])){
+            drawCount++;
+        } else if((playerSelection == choiceArray[0]) && (computerSelection == choiceArray[0])){
             drawCount++;
         }
-    }
-    let score = "Player: " + playerCount + " vs " + "Computer: " + computerCount + " and number of draws: " + drawCount;
-    console.log(score)
-
-    if(playerCount > computerCount) {
-        console.log ('player wins')
-    } else if (computerCount > playerCount) {
-        console.log('computer wins')
     } else {
-        console.log('no winner')
-    }
-}
+        if(playerCount > computerCount){
+            winner.style.color = 'green';
+            winner.textContent = 'winner is player';
+        } else if (computerCount > playerCount) {
+            winner.style.color = 'red';
+            winner.textContent = 'winner is computer';
+        };
+    
+    };
 
-game(3)
+    // tracks the amount of time player and computer won for easier score keeping
+    // playerMove.textContent = "You selected " + playerMoveTracker;
+    // computerMove.textContent = "Computer selected " + computerMoveTracker;
+    
+    // writes the number of times each happened for a easier score keeping
+    playerScore.textContent = 'Player score is: ' + playerCount;
+    computerScore.textContent = 'Computer score is: ' + computerCount;
+    drawScore.textContent = 'number of draws: ' + drawCount;
+
+    return drawCount, playerCount, computerCount;
+};
+
